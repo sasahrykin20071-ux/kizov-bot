@@ -1,96 +1,124 @@
-// Главная страница - подача заявки
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('applyForm');
     const submitBtn = document.getElementById('submitBtn');
     const successMessage = document.getElementById('successMessage');
     const errorMessage = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorText');
+    const topRecruitersWrap = document.getElementById('topRecruitersWrap');
+    const refreshTopBtn = document.getElementById('refreshTopBtn');
 
-    // Валидация Discord тега
-    const discordTagInput = document.getElementById('discord_tag');
-    discordTagInput.addEventListener('input', (e) => {
-        const value = e.target.value;
-        // Автоматически добавляем # если пользователь вводит только имя
-        if (value && !value.includes('#') && value.length >= 2) {
-            // Не менять, пусть пользователь вводит сам
-        }
-    });
+    const showError = (message) => {
+        errorText.textContent = message;
+        errorMessage.classList.remove('hidden');
+        successMessage.classList.add('hidden');
+    };
 
-    // Отправка формы
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const showSuccess = () => {
+        successMessage.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+    };
 
-        // Валидация Discord тега
-        const discordTag = discordTagInput.value.trim();
-        const tagRegex = /^.+#\d{4}$/;
-        
-        if (!tagRegex.test(discordTag)) {
-            showError('Неверный формат Discord тега. Пример: Имя#1234');
+    const validateDiscordTag = (value) => /^.+#\d{4}$/.test(value);
+
+    const renderTopRecruiters = (recruiters) => {
+        if (!recruiters || recruiters.length === 0) {
+            topRecruitersWrap.innerHTML = '<p class="muted">Пока нет данных по рекрутерам.</p>';
             return;
         }
 
-        // Собираем данные
-        const data = {
-            discord_tag: discordTag,
+        const rows = recruiters.map((item, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${escapeHtml(item.recruiter)}</td>
+                <td>${item.approved || 0}</td>
+                <td>${item.total_processed || 0}</td>
+                <td>${item.rejected || 0}</td>
+            </tr>
+        `).join('');
+
+        topRecruitersWrap.innerHTML = `
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Рекрутер</th>
+                        <th>Одобрено</th>
+                        <th>Всего обработано</th>
+                        <th>Отклонено</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `;
+    };
+
+    const loadTopRecruiters = async () => {
+        topRecruitersWrap.innerHTML = '<p class="muted">Загрузка рейтинга...</p>';
+        try {
+            const response = await fetch('/api/recruiters-top?limit=15');
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ошибка загрузки');
+            renderTopRecruiters(data.recruiters || []);
+        } catch (error) {
+            topRecruitersWrap.innerHTML = '<p class="muted">Не удалось загрузить рейтинг.</p>';
+        }
+    };
+
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text ?? '';
+        return div.innerHTML;
+    };
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const payload = {
+            discord_tag: document.getElementById('discord_tag').value.trim(),
             game_nick: document.getElementById('game_nick').value.trim(),
             static_number: document.getElementById('static_number').value.trim(),
-            ooc_age: document.getElementById('ooc_age').value,
+            ooc_age: document.getElementById('ooc_age').value.trim(),
             join_goal: document.getElementById('join_goal').value.trim(),
             heard_about: document.getElementById('heard_about').value.trim(),
             city: document.getElementById('city').value
         };
 
-        // Валидация обязательных полей
-        if (!data.game_nick || !data.static_number || !data.ooc_age || !data.join_goal || !data.heard_about) {
-            showError('Пожалуйста, заполните все поля');
+        if (!validateDiscordTag(payload.discord_tag)) {
+            showError('Неверный Discord тег. Пример: Name#1234');
             return;
         }
 
-        // Блокируем кнопку и показываем загрузку
+        if (!payload.game_nick || !payload.static_number || !payload.ooc_age || !payload.join_goal || !payload.heard_about) {
+            showError('Заполните все обязательные поля.');
+            return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.textContent = 'Отправка...';
-        hideMessages();
 
         try {
             const response = await fetch('/api/apply', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
+            const data = await response.json();
 
-            const result = await response.json();
-
-            if (response.ok) {
-                showSuccess();
-                form.reset();
-            } else {
-                showError(result.error || 'Произошла ошибка при отправке заявки');
+            if (!response.ok) {
+                throw new Error(data.error || 'Не удалось отправить заявку');
             }
+
+            form.reset();
+            showSuccess();
+            loadTopRecruiters();
         } catch (error) {
-            console.error('Error:', error);
-            showError('Ошибка соединения с сервером');
+            showError(error.message || 'Ошибка соединения с сервером');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить заявку';
         }
     });
 
-    function showSuccess() {
-        form.style.display = 'none';
-        successMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-    }
-
-    function showError(message) {
-        errorText.textContent = message;
-        errorMessage.style.display = 'block';
-        successMessage.style.display = 'none';
-    }
-
-    function hideMessages() {
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-    }
+    refreshTopBtn.addEventListener('click', loadTopRecruiters);
+    loadTopRecruiters();
 });

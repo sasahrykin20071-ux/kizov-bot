@@ -146,6 +146,21 @@ const queries = {
         FROM applications
     `),
 
+    // Топ рекрутеров
+    getRecruitersTop: db.prepare(`
+        SELECT
+            processed_by as recruiter,
+            COUNT(*) as total_processed,
+            SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
+            SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+            SUM(CASE WHEN status IN ('in_review', 'called') THEN 1 ELSE 0 END) as active
+        FROM applications
+        WHERE processed_by IS NOT NULL AND TRIM(processed_by) <> ''
+        GROUP BY processed_by
+        ORDER BY approved DESC, total_processed DESC
+        LIMIT ?
+    `),
+
     // Настройки
     getSetting: db.prepare(`
         SELECT value FROM settings WHERE key = ?
@@ -204,6 +219,11 @@ module.exports = {
     // Получить статистику
     getStats() {
         return queries.getStats.get();
+    },
+
+    // Получить топ рекрутеров
+    getRecruitersTop(limit = 20) {
+        return queries.getRecruitersTop.all(limit);
     },
 
     // Получить настройку

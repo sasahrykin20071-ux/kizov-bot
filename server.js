@@ -223,6 +223,34 @@ app.get('/api/stats', isAuthenticated, (req, res) => {
     res.json(db.getStats());
 });
 
+// Публичная статистика для главной страницы
+app.get('/api/public/overview', (req, res) => {
+    try {
+        const stats = db.getStats();
+        const topRecruiters = db.getRecruitersTop(5);
+        res.json({
+            familyName: config.family.name,
+            stats,
+            topRecruiters
+        });
+    } catch (error) {
+        console.error('Public overview error:', error);
+        res.status(500).json({ error: 'Ошибка получения публичной статистики' });
+    }
+});
+
+// Публичный топ рекрутеров
+app.get('/api/recruiters-top', (req, res) => {
+    try {
+        const limit = Math.max(1, Math.min(50, Number(req.query.limit || 20)));
+        const list = db.getRecruitersTop(limit);
+        res.json({ recruiters: list });
+    } catch (error) {
+        console.error('Recruiters top error:', error);
+        res.status(500).json({ error: 'Ошибка получения топа рекрутеров' });
+    }
+});
+
 // ============ ROUTES ============
 
 app.get('/', (req, res) => {

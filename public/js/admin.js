@@ -1,13 +1,13 @@
-// Админ-панель
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const loginSection = document.getElementById('loginSection');
     const adminPanel = document.getElementById('adminPanel');
     const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
     const logoutBtn = document.getElementById('logoutBtn');
     const applicationsList = document.getElementById('applicationsList');
-    const loginError = document.getElementById('loginError');
+    const adminTopWrap = document.getElementById('adminTopWrap');
+    const refreshAdminTopBtn = document.getElementById('refreshAdminTopBtn');
 
-    // Элементы статистики
     const statTotal = document.getElementById('statTotal');
     const statPending = document.getElementById('statPending');
     const statApproved = document.getElementById('statApproved');
@@ -16,187 +16,165 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentFilter = 'all';
     let applications = [];
 
-    // Проверяем статус авторизации
-    async function checkAuth() {
-        try {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-            
-            if (data.isAdmin) {
-                showAdminPanel();
-                loadApplications();
-            } else {
-                showLoginForm();
-            }
-        } catch (error) {
-            console.error('Auth check error:', error);
-            showLoginForm();
-        }
-    }
+    const statusMap = {
+        pending: 'Ожидает',
+        in_review: 'На рассмотрении',
+        called: 'Обзвон',
+        approved: 'Одобрена',
+        rejected: 'Отклонена'
+    };
 
-    // Показать форму входа
-    function showLoginForm() {
-        loginSection.style.display = 'block';
-        adminPanel.style.display = 'none';
-    }
+    const escapeHtml = (value) => {
+        const div = document.createElement('div');
+        div.textContent = String(value || '');
+        return div.innerHTML;
+    };
 
-    // Показать админ-панель
-    function showAdminPanel() {
-        loginSection.style.display = 'none';
-        adminPanel.style.display = 'block';
-    }
+    const formatDate = (dateValue) => {
+        if (!dateValue) return '-';
+        const date = new Date(dateValue);
+        return date.toLocaleString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
-    // Загрузка заявок
-    async function loadApplications() {
-        try {
-            const response = await fetch('/api/applications');
-            
-            if (!response.ok) {
-                throw new Error('Ошибка загрузки');
-            }
-            
-            const data = await response.json();
-            applications = data.applications;
-            
-            updateStats(data.stats);
-            renderApplications();
-        } catch (error) {
-            console.error('Load error:', error);
-            showToast('Ошибка загрузки заявок', 'error');
-        }
-    }
+    const showLogin = () => {
+        loginSection.classList.remove('hidden');
+        adminPanel.classList.add('hidden');
+    };
 
-    // Обновление статистики
-    function updateStats(stats) {
-        statTotal.textContent = stats.total || 0;
-        statPending.textContent = stats.pending || 0;
-        statApproved.textContent = stats.approved || 0;
-        statRejected.textContent = stats.rejected || 0;
-    }
+    const showAdmin = () => {
+        loginSection.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+    };
 
-    // Рендер списка заявок
-    function renderApplications() {
-        const filtered = currentFilter === 'all' 
-            ? applications 
-            : applications.filter(app => app.status === currentFilter);
+    const renderApplications = () => {
+        const list = currentFilter === 'all'
+            ? applications
+            : applications.filter((item) => item.status === currentFilter);
 
-        if (filtered.length === 0) {
-            applicationsList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
-                    <p>Заявки не найдены</p>
-                </div>
-            `;
+        if (list.length === 0) {
+            applicationsList.innerHTML = '<p class="muted">Заявок по выбранному фильтру нет.</p>';
             return;
         }
 
-        applicationsList.innerHTML = filtered.map(app => `
-            <div class="application-card" data-id="${app.id}">
-                <div class="application-header">
+        applicationsList.innerHTML = list.map((app) => `
+            <article class="application-item">
+                <div class="application-head">
                     <div>
-                        <div class="application-discord">${escapeHtml(app.discord_tag)}</div>
-                        <div class="application-date">${formatDate(app.created_at)}</div>
+                        <h3>${escapeHtml(app.discord_tag)}</h3>
+                        <p class="muted">${formatDate(app.created_at)}</p>
                     </div>
-                    <span class="application-status status-${app.status}">
-                        ${getStatusText(app.status)}
-                    </span>
+                    <span class="status-chip status-${app.status}">${statusMap[app.status] || app.status}</span>
                 </div>
-                
-                <div class="application-content">
-                    <div class="application-field">
-                        <div class="application-field-label">Сервер</div>
-                        <div class="application-field-value">${escapeHtml(app.city || '-') }</div>
-                    </div>
-                    <div class="application-field">
-                        <div class="application-field-label">Ник в игре</div>
-                        <div class="application-field-value">${escapeHtml(app.game_nick || '-')}</div>
-                    </div>
-                    <div class="application-field">
-                        <div class="application-field-label">Статик #</div>
-                        <div class="application-field-value">${escapeHtml(app.static_number || '-')}</div>
-                    </div>
-                    <div class="application-field">
-                        <div class="application-field-label">Возраст OOC</div>
-                        <div class="application-field-value">${escapeHtml(app.ooc_age || '-')}</div>
-                    </div>
-                    <div class="application-field" style="grid-column: 1 / -1;">
-                        <div class="application-field-label">Цель вступления</div>
-                        <div class="application-field-value">${escapeHtml(truncate(app.join_goal || '', 150))}</div>
-                    </div>
-                    <div class="application-field" style="grid-column: 1 / -1;">
-                        <div class="application-field-label">Как узнали о семье</div>
-                        <div class="application-field-value">${escapeHtml(truncate(app.heard_about || '', 150))}</div>
-                    </div>
-                </div>
-                
+                <dl class="app-fields">
+                    <div><dt>Сервер</dt><dd>${escapeHtml(app.city || '-')}</dd></div>
+                    <div><dt>Ник</dt><dd>${escapeHtml(app.game_nick || '-')}</dd></div>
+                    <div><dt>Статик</dt><dd>${escapeHtml(app.static_number || '-')}</dd></div>
+                    <div><dt>Возраст OOC</dt><dd>${escapeHtml(app.ooc_age || '-')}</dd></div>
+                    <div><dt>Цель</dt><dd>${escapeHtml(app.join_goal || '-')}</dd></div>
+                    <div><dt>Как узнал</dt><dd>${escapeHtml(app.heard_about || '-')}</dd></div>
+                </dl>
                 ${app.status === 'pending' ? `
-                    <div class="application-actions">
-                        <button class="btn btn-success" onclick="approveApplication(${app.id})">
-                            ✅ Одобрить
-                        </button>
-                        <button class="btn btn-danger" onclick="rejectApplication(${app.id})">
-                            ❌ Отклонить
-                        </button>
+                    <div class="actions-row">
+                        <button class="btn btn-success" onclick="window.__approve(${app.id})">Одобрить</button>
+                        <button class="btn btn-danger" onclick="window.__reject(${app.id})">Отклонить</button>
                     </div>
                 ` : `
-                    <div class="application-actions" style="color: var(--color-text-dim); font-size: 13px;">
-                        Обработано: ${app.processed_by || 'admin'} • ${formatDate(app.processed_at)}
-                    </div>
+                    <p class="muted">Обработал: ${escapeHtml(app.processed_by || '-')} • ${formatDate(app.processed_at)}</p>
                 `}
-            </div>
+            </article>
         `).join('');
-    }
+    };
 
-    // Одобрение заявки
-    window.approveApplication = async (id) => {
-        if (!confirm('Одобрить эту заявку?')) return;
+    const renderTopRecruiters = (recruiters) => {
+        if (!recruiters || recruiters.length === 0) {
+            adminTopWrap.innerHTML = '<p class="muted">Пока нет данных.</p>';
+            return;
+        }
 
+        const rows = recruiters.map((item, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${escapeHtml(item.recruiter)}</td>
+                <td>${item.approved || 0}</td>
+                <td>${item.total_processed || 0}</td>
+                <td>${item.rejected || 0}</td>
+            </tr>
+        `).join('');
+
+        adminTopWrap.innerHTML = `
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Рекрутер</th>
+                        <th>Одобрено</th>
+                        <th>Обработано</th>
+                        <th>Отклонено</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `;
+    };
+
+    const loadRecruitersTop = async () => {
+        adminTopWrap.innerHTML = '<p class="muted">Загрузка...</p>';
         try {
-            const response = await fetch(`/api/applications/${id}/approve`, {
-                method: 'PUT'
-            });
-
-            if (response.ok) {
-                showToast('Заявка одобрена', 'success');
-                loadApplications();
-            } else {
-                const data = await response.json();
-                showToast(data.error || 'Ошибка', 'error');
-            }
+            const response = await fetch('/api/recruiters-top?limit=10');
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Не удалось загрузить рейтинг');
+            renderTopRecruiters(data.recruiters || []);
         } catch (error) {
-            console.error('Approve error:', error);
-            showToast('Ошибка одобрения заявки', 'error');
+            adminTopWrap.innerHTML = '<p class="muted">Ошибка загрузки топа.</p>';
         }
     };
 
-    // Отклонение заявки
-    window.rejectApplication = async (id) => {
-        if (!confirm('Отклонить эту заявку?')) return;
-
+    const loadApplications = async () => {
         try {
-            const response = await fetch(`/api/applications/${id}/reject`, {
-                method: 'PUT'
-            });
+            const response = await fetch('/api/applications');
+            if (!response.ok) throw new Error('Требуется авторизация');
+            const data = await response.json();
+            applications = data.applications || [];
 
-            if (response.ok) {
-                showToast('Заявка отклонена', 'success');
-                loadApplications();
-            } else {
-                const data = await response.json();
-                showToast(data.error || 'Ошибка', 'error');
-            }
+            const stats = data.stats || {};
+            statTotal.textContent = stats.total || 0;
+            statPending.textContent = stats.pending || 0;
+            statApproved.textContent = stats.approved || 0;
+            statRejected.textContent = stats.rejected || 0;
+
+            renderApplications();
+            loadRecruitersTop();
         } catch (error) {
-            console.error('Reject error:', error);
-            showToast('Ошибка отклонения заявки', 'error');
+            showLogin();
         }
     };
 
-    // Вход
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        loginError.style.display = 'none';
+    const checkAuth = async () => {
+        try {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
+            if (data.isAdmin) {
+                showAdmin();
+                loadApplications();
+                return;
+            }
+            showLogin();
+        } catch (error) {
+            showLogin();
+        }
+    };
 
-        const username = document.getElementById('username').value;
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        loginError.classList.add('hidden');
+
+        const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
         try {
@@ -206,98 +184,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({ username, password })
             });
 
-            if (response.ok) {
-                showAdminPanel();
-                loadApplications();
-            } else {
-                loginError.style.display = 'block';
-            }
+            if (!response.ok) throw new Error('Неверные данные');
+            showAdmin();
+            loadApplications();
         } catch (error) {
-            console.error('Login error:', error);
-            loginError.style.display = 'block';
+            loginError.classList.remove('hidden');
         }
     });
 
-    // Выход
     logoutBtn.addEventListener('click', async () => {
-        try {
-            await fetch('/api/logout', { method: 'POST' });
-            showLoginForm();
-            loginForm.reset();
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
+        await fetch('/api/logout', { method: 'POST' });
+        showLogin();
+        loginForm.reset();
     });
 
-    // Фильтры
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
+    document.querySelectorAll('.filter-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+            button.classList.add('active');
+            currentFilter = button.dataset.filter;
             renderApplications();
         });
     });
 
-    // Утилиты
-    function formatDate(dateStr) {
-        if (!dateStr) return '-';
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
+    refreshAdminTopBtn.addEventListener('click', loadRecruitersTop);
 
-    function getStatusText(status) {
-        const texts = {
-            pending: 'Ожидает',
-            in_review: 'На рассмотрении',
-            called: 'Вызван на обзвон',
-            approved: 'Одобрена',
-            rejected: 'Отклонена'
-        };
-        return texts[status] || status;
-    }
+    window.__approve = async (id) => {
+        if (!confirm('Одобрить заявку?')) return;
+        const response = await fetch(`/api/applications/${id}/approve`, { method: 'PUT' });
+        const data = await response.json();
+        if (!response.ok) {
+            alert(data.error || 'Ошибка');
+            return;
+        }
+        loadApplications();
+    };
 
-    function truncate(str, length) {
-        if (!str) return '';
-        return str.length > length ? str.substring(0, length) + '...' : str;
-    }
+    window.__reject = async (id) => {
+        if (!confirm('Отклонить заявку?')) return;
+        const response = await fetch(`/api/applications/${id}/reject`, { method: 'PUT' });
+        const data = await response.json();
+        if (!response.ok) {
+            alert(data.error || 'Ошибка');
+            return;
+        }
+        loadApplications();
+    };
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function showToast(message, type = 'success') {
-        const container = document.querySelector('.toast-container') || createToastContainer();
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.innerHTML = `
-            <span>${type === 'success' ? '✅' : '❌'}</span>
-            <span>${message}</span>
-        `;
-        container.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.animation = 'slideIn 0.3s ease reverse';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
-    function createToastContainer() {
-        const container = document.createElement('div');
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-        return container;
-    }
-
-    // Инициализация
     checkAuth();
 });
