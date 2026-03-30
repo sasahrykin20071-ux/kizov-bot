@@ -11,17 +11,17 @@
 </head>
 <body class="theme-red">
     <div class="frame-glow"></div>
-    <header class="topbar">
+    <header class="topbar topbar-solid">
         <div class="brandline">
             <span class="k-mark">K</span>
             <span class="brand-main">KIZOV</span>
             <span class="brand-accent">FAMQ</span>
         </div>
         <nav class="main-nav">
-            <a href="/">HOME</a>
-            <a href="/#intel">INTEL</a>
-            <a href="/#enlist">ENLIST</a>
-            <a href="/admin" class="active">COMMAND</a>
+            <a href="/">ГЛАВНАЯ</a>
+            <a href="/#info">ИНФО</a>
+            <a href="/#enlist">ВСТУПИТЬ</a>
+            <a href="/admin" class="active">УПРАВЛЕНИЕ</a>
         </nav>
     </header>
 
@@ -40,6 +40,7 @@
                     <p>Управление заявками и настройками набора.</p>
                 </div>
                 <div class="user-chip">
+                    <button id="publishApplyMessageBtn" class="ghost-btn">ОТПРАВИТЬ БЛОК ЗАЯВКИ</button>
                     <img id="adminAvatar" src="" alt="avatar">
                     <span id="adminName">Recruiter</span>
                     <button id="logoutBtn" class="ghost-btn">ВЫЙТИ</button>
@@ -91,11 +92,16 @@
                         <h2>РЕЙТИНГ РЕКРУТЕРОВ</h2>
                         <p class="muted">Статистика по финальным решениям рекрутера.</p>
                     </div>
-                    <button id="refreshAdminTopBtn" class="ghost-btn">ОБНОВИТЬ</button>
+                    <div class="period-tabs">
+                        <button class="period-btn active" data-period="week">ЗА НЕДЕЛЮ</button>
+                        <button class="period-btn" data-period="month">ЗА МЕСЯЦ</button>
+                        <button class="period-btn" data-period="all">ЗА ВСЁ ВРЕМЯ</button>
+                    </div>
                 </div>
                 <div id="adminTopWrap" class="rating-list">
                     <p class="muted">Загрузка...</p>
                 </div>
+                <button id="refreshAdminTopBtn" class="ghost-btn">ОБНОВИТЬ РЕЙТИНГ</button>
             </section>
         </section>
     </main>

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminName = document.getElementById('adminName');
     const adminAvatar = document.getElementById('adminAvatar');
     const logoutBtn = document.getElementById('logoutBtn');
+    const publishApplyMessageBtn = document.getElementById('publishApplyMessageBtn');
 
     const applicationsList = document.getElementById('applicationsList');
     const rosterList = document.getElementById('rosterList');
@@ -264,6 +265,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     refreshAdminTopBtn.addEventListener('click', loadTop);
+    document.querySelectorAll('.period-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.period-btn').forEach((item) => item.classList.remove('active'));
+            button.classList.add('active');
+            loadTop();
+        });
+    });
+
+    publishApplyMessageBtn.addEventListener('click', async () => {
+        const originalText = publishApplyMessageBtn.textContent;
+        publishApplyMessageBtn.disabled = true;
+        publishApplyMessageBtn.textContent = 'ОТПРАВКА...';
+        try {
+            const response = await fetch('/api/admin/publish-application-message', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ошибка отправки');
+            publishApplyMessageBtn.textContent = 'ОТПРАВЛЕНО';
+            setTimeout(() => {
+                publishApplyMessageBtn.textContent = originalText;
+                publishApplyMessageBtn.disabled = false;
+            }, 1400);
+        } catch (error) {
+            alert(error.message || 'Не удалось отправить сообщение');
+            publishApplyMessageBtn.textContent = originalText;
+            publishApplyMessageBtn.disabled = false;
+        }
+    });
 
     logoutBtn.addEventListener('click', async () => {
         await fetch('/api/logout', { method: 'POST' });

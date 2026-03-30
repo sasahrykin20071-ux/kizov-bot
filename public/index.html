@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kizov FAMQ | Portal</title>
+    <title>Kizov FAMQ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -11,97 +11,117 @@
 </head>
 <body class="theme-red">
     <div class="frame-glow"></div>
-    <header class="topbar">
-        <div class="brandline">
-            <span class="k-mark">K</span>
+
+    <header class="topbar topbar-solid">
+        <div class="brandline brandline-wide">
+            <span class="k-mark k-mark-logo">K</span>
             <span class="brand-main">KIZOV</span>
             <span class="brand-accent">FAMQ</span>
         </div>
-        <nav class="main-nav main-nav-tabs">
-            <button class="nav-tab active" data-view="home">HOME</button>
-            <button class="nav-tab" data-view="intel">INTEL</button>
-            <button class="nav-tab" data-view="enlist">ENLIST</button>
-            <a href="/admin" class="nav-command-link">COMMAND</a>
+        <nav class="main-nav nav-plain">
+            <button class="nav-tab active" data-view="home">ГЛАВНАЯ</button>
+            <button class="nav-tab" data-view="info">ИНФО</button>
+            <button class="nav-tab" data-view="enlist">ВСТУПИТЬ</button>
+            <a href="/admin" class="nav-command-link">УПРАВЛЕНИЕ</a>
         </nav>
     </header>
 
-    <main>
+    <main class="public-main">
         <section id="view-home" class="view-panel active">
-            <section class="hero-block">
-                <div class="hero-icon">◎</div>
-                <h1>ВСТУПИТЬ В <span>СЕМЬЮ</span></h1>
-                <p class="hero-sub">Подача заявок осуществляется <b>исключительно через Discord</b>.</p>
-                <p class="hero-text">
-                    Зайди на сервер, открой канал подачи заявок и выбери семью Orlando или Seattle.
-                    Рекрутер обработает заявку и даст решение.
+            <section class="hero-home">
+                <div class="hero-logo">K</div>
+                <h1>KIZOV <span>FAMQ</span></h1>
+                <p class="hero-home-sub">
+                    Элитное игровое братство. Абсолютная верность.
+                    Тотальное превосходство. Вступи в ряды самой грозной семьи в секторе.
                 </p>
+                <button class="cta-btn cta-join" data-view-link="enlist">ВСТУПИТЬ</button>
+            </section>
+
+            <section class="home-cards">
+                <article class="home-card">
+                    <div class="home-card-icon">◎</div>
+                    <h3>ТОЧНОСТЬ БЕЗ КОМПРОМИССОВ</h3>
+                    <p>Мы играем не ради участия. Мы играем ради победы, с чёткой тактикой и безупречным исполнением.</p>
+                </article>
+                <article class="home-card">
+                    <div class="home-card-icon">◍</div>
+                    <h3>АБСОЛЮТНАЯ ВЕРНОСТЬ</h3>
+                    <p>Надев тег Kizov, ты становишься семьей. Мы защищаем своих и не бросаем никого на поле боя.</p>
+                </article>
+                <article class="home-card">
+                    <div class="home-card-icon">⌂</div>
+                    <h3>ВЕЧНАЯ СЛАВА</h3>
+                    <p>Наш послужной список говорит сам за себя. Вступи и впиши своё имя в историю игрового мира.</p>
+                </article>
+            </section>
+        </section>
+
+        <section id="view-info" class="view-panel">
+            <section class="card card-info-head">
+                <h2><span>ИНФО</span> & ПРОТОКОЛ</h2>
+                <p>Ознакомься внимательно перед подачей заявки. Незнание правил не оправдание.</p>
+            </section>
+
+            <section class="card card-dark">
+                <h2>ОСНОВНЫЕ ПРАВИЛА</h2>
+                <div class="rules-grid">
+                    <article class="rule-card">
+                        <h3>УВАЖАЙ ИЕРАРХИЮ</h3>
+                        <p>Приказы командования закон. Неуважение к руководству ведёт к исключению.</p>
+                    </article>
+                    <article class="rule-card">
+                        <h3>БУДЬ АКТИВЕН И РЕЗУЛЬТАТИВЕН</h3>
+                        <p>Бездействие без предупреждения недопустимо. Мы требуем постоянного роста.</p>
+                    </article>
+                    <article class="rule-card">
+                        <h3>НИКАКОЙ ТОКСИЧНОСТИ И ЧИТОВ</h3>
+                        <p>Внутри семьи держи уважение. Любые читы или эксплойты противоречат духу Kizov.</p>
+                    </article>
+                    <article class="rule-card">
+                        <h3>НЕСИ ТЕГ С ЧЕСТЬЮ</h3>
+                        <p>Ты представляешь всю семью. Веди себя с дисциплиной и достоинством.</p>
+                    </article>
+                </div>
             </section>
 
             <section class="card card-gradient">
                 <h2>ТРЕБОВАНИЯ ДЛЯ ВСТУПЛЕНИЯ</h2>
                 <ul class="requirements">
-                    <li>Возраст от 16 лет (исключения для сильных кандидатов).</li>
-                    <li>Рабочий микрофон и Discord-активность во время операций.</li>
-                    <li>Опыт командной или тактической игры.</li>
-                    <li>Готовность к дисциплине и развитию в составе.</li>
+                    <li>Возраст от 16 лет (исключения для исключительных игроков).</li>
+                    <li>Рабочий микрофон и обязательное присутствие в Discord во время операций.</li>
+                    <li>Опыт в соревновательной или тактической игре.</li>
+                    <li>Готовность учиться и адаптироваться под стратегию Kizov.</li>
                 </ul>
             </section>
         </section>
 
-        <section id="view-intel" class="view-panel">
-            <section class="card card-red">
-                <h2>ОГЛАВЛЕНИЕ</h2>
-                <ol class="toc">
-                    <li>Как подать заявку в семью</li>
-                    <li>Рейтинг рекрутеров</li>
-                    <li>Требования и правила вступления</li>
-                    <li>Информация о составе и философии FAMQ</li>
-                </ol>
-            </section>
-
-            <section class="card card-dark intel-grid">
-                <article class="intel-text">
-                    <h2>ИНФОРМАЦИЯ О FAMQ</h2>
-                    <p>
-                        Kizov FAMQ это структурированная семья, где рекрутинг построен как система:
-                        прозрачные этапы, быстрый отклик и решения по делу.
-                    </p>
-                    <p class="muted">
-                        Наша цель собрать стабильный состав на долгую дистанцию, а не разовый набор.
-                    </p>
-                </article>
-                <div class="intel-visual"></div>
-            </section>
-
-            <section class="card card-dark">
-                <div class="section-row">
-                    <div>
-                        <h2>РЕЙТИНГ РЕКРУТЕРОВ</h2>
-                        <p class="muted">Статистика по принятым и отклонённым заявкам.</p>
-                    </div>
-                    <button id="refreshTopBtn" class="ghost-btn">ОБНОВИТЬ</button>
-                </div>
-                <div id="topRecruitersWrap" class="rating-list">
-                    <p class="muted">Загрузка...</p>
-                </div>
-            </section>
-        </section>
-
         <section id="view-enlist" class="view-panel">
+            <section class="hero-block">
+                <div class="hero-icon">◎</div>
+                <h1>ВСТУПИТЬ В <span>СЕМЬЮ</span></h1>
+                <p class="hero-sub">Подача заявок осуществляется <b>исключительно через Discord</b>.</p>
+                <p class="hero-text">
+                    Зайди на наш сервер, открой канал <b>#подача-заявки</b> и выбери семью Orlando или Seattle.
+                    Рекрутер рассмотрит твою анкету в ближайшее время.
+                </p>
+            </section>
+
             <section class="card card-dark">
                 <h2>КАК ПОДАТЬ ЗАЯВКУ</h2>
                 <div class="steps">
                     <div><span>01</span> Зайди на Discord сервер Kizov FAMQ</div>
                     <div><span>02</span> Открой канал <b>#подача-заявки</b></div>
                     <div><span>03</span> Нажми кнопку нужной семьи: Orlando или Seattle</div>
-                    <div><span>04</span> Заполни анкету в Discord-форме и отправь</div>
+                    <div><span>04</span> Заполни анкету и отправь — рекрутер свяжется</div>
                 </div>
                 <a id="discordInviteBtn" href="#" target="_blank" rel="noopener" class="cta-btn">ПЕРЕЙТИ В DISCORD</a>
-                <p class="muted">Подача через сайт отключена, чтобы не было дубликатов и ошибок.</p>
+                <p class="muted">Нет доступа к серверу? Обратись к любому участнику клана в игре.</p>
             </section>
         </section>
-
     </main>
+
+    <footer class="site-footer">KIZOV FAMQ • EST. 2024</footer>
 
     <script src="js/app.js"></script>
 </body>

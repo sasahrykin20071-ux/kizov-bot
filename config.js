@@ -16,8 +16,7 @@ module.exports = {
         applicationLogArchiveCategoryId: '1467906915370532914',
         staffRoleIds: [
             '1455967192226201704',
-            '1455967233799880859',
-            '1455967689007697930'
+            '1455967233799880859'
         ],
         logAutoDeleteHours: 0,
         logAutoDeleteSeconds: 8

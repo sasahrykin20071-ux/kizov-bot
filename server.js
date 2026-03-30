@@ -1,6 +1,13 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    ChannelType
+} = require('discord.js');
 const config = require('./config');
 const db = require('./database');
 
@@ -227,6 +234,52 @@ app.put('/api/applications/:id/reject', isAuthenticated, async (req, res) => {
     } catch (error) {
         console.error('Reject error:', error);
         res.status(500).json({ error: 'Ошибка при отклонении заявки' });
+    }
+});
+
+// Отправить стартовое сообщение "Подать заявку" в Discord из админки
+app.post('/api/admin/publish-application-message', isAuthenticated, async (req, res) => {
+    try {
+        if (!botInstance) {
+            return res.status(503).json({ error: 'Discord бот ещё не готов.' });
+        }
+
+        const channelId = String(config.discord.applicationChannelId || '');
+        if (!channelId || channelId.includes('YOUR_APPLICATION_CHANNEL_ID')) {
+            return res.status(400).json({ error: 'Не настроен applicationChannelId.' });
+        }
+
+        const channel = await botInstance.channels.fetch(channelId);
+        if (!channel || channel.type !== ChannelType.GuildText) {
+            return res.status(404).json({ error: 'Канал для публикации не найден.' });
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle('Подать заявку')
+            .setDescription(`Выберите сервер и заполните форму для вступления в ${config.family.name}.`)
+            .setColor(0x5865F2);
+
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('apply_seattle')
+                .setLabel('Подать заявку Seattle')
+                .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+                .setCustomId('apply_orlando')
+                .setLabel('Подать заявку Orlando')
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+        const message = await channel.send({
+            embeds: [embed],
+            components: [row]
+        });
+
+        db.setSetting('application_message_id', message.id);
+        res.json({ success: true, messageId: message.id });
+    } catch (error) {
+        console.error('Publish application message error:', error);
+        res.status(500).json({ error: 'Не удалось отправить сообщение в Discord.' });
     }
 });
 
