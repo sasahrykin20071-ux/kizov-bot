@@ -1,39 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginSection = document.getElementById('loginSection');
     const adminPanel = document.getElementById('adminPanel');
-    const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('loginError');
+    const oauthErrorText = document.getElementById('oauthErrorText');
+    const adminName = document.getElementById('adminName');
+    const adminAvatar = document.getElementById('adminAvatar');
     const logoutBtn = document.getElementById('logoutBtn');
+
     const applicationsList = document.getElementById('applicationsList');
+    const rosterList = document.getElementById('rosterList');
     const adminTopWrap = document.getElementById('adminTopWrap');
     const refreshAdminTopBtn = document.getElementById('refreshAdminTopBtn');
+    const searchInput = document.getElementById('searchInput');
 
-    const statTotal = document.getElementById('statTotal');
-    const statPending = document.getElementById('statPending');
-    const statApproved = document.getElementById('statApproved');
-    const statRejected = document.getElementById('statRejected');
-
-    let currentFilter = 'all';
     let applications = [];
+    let currentStatus = 'all';
+    let currentCity = 'all';
+    let searchQuery = '';
 
     const statusMap = {
-        pending: 'Ожидает',
-        in_review: 'На рассмотрении',
-        called: 'Обзвон',
-        approved: 'Одобрена',
-        rejected: 'Отклонена'
+        pending: 'ОЖИДАЕТ',
+        in_review: 'РАССМОТРЕНИЕ',
+        called: 'ОБЗВОН',
+        approved: 'ПРИНЯТ',
+        rejected: 'ОТКЛОНЁН'
     };
 
-    const escapeHtml = (value) => {
-        const div = document.createElement('div');
-        div.textContent = String(value || '');
-        return div.innerHTML;
-    };
-
-    const formatDate = (dateValue) => {
-        if (!dateValue) return '-';
-        const date = new Date(dateValue);
-        return date.toLocaleString('ru-RU', {
+    const formatDate = (value) => {
+        if (!value) return '-';
+        return new Date(value).toLocaleString('ru-RU', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
@@ -42,80 +36,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const showLogin = () => {
-        loginSection.classList.remove('hidden');
-        adminPanel.classList.add('hidden');
+    const escapeHtml = (value) => {
+        const div = document.createElement('div');
+        div.textContent = String(value || '');
+        return div.innerHTML;
     };
 
-    const showAdmin = () => {
-        loginSection.classList.add('hidden');
-        adminPanel.classList.remove('hidden');
+    const getFilteredApplications = () => {
+        return applications.filter((item) => {
+            const byStatus = currentStatus === 'all' ? true : item.status === currentStatus;
+            const byCity = currentCity === 'all' ? true : item.city === currentCity;
+            const q = searchQuery.trim().toLowerCase();
+            const bySearch = !q
+                ? true
+                : String(item.discord_tag || '').toLowerCase().includes(q)
+                    || String(item.game_nick || '').toLowerCase().includes(q)
+                    || String(item.static_number || '').toLowerCase().includes(q);
+            return byStatus && byCity && bySearch;
+        });
     };
 
     const renderApplications = () => {
-        const list = currentFilter === 'all'
-            ? applications
-            : applications.filter((item) => item.status === currentFilter);
-
+        const list = getFilteredApplications();
         if (list.length === 0) {
-            applicationsList.innerHTML = '<p class="muted">Заявок по выбранному фильтру нет.</p>';
+            applicationsList.innerHTML = '<div class="empty-box">Заявок не найдено.</div>';
             return;
         }
 
-        applicationsList.innerHTML = list.map((app) => `
-            <article class="application-item">
-                <div class="application-head">
-                    <div>
-                        <h3>${escapeHtml(app.discord_tag)}</h3>
-                        <p class="muted">${formatDate(app.created_at)}</p>
-                    </div>
-                    <span class="status-chip status-${app.status}">${statusMap[app.status] || app.status}</span>
-                </div>
-                <dl class="app-fields">
-                    <div><dt>Сервер</dt><dd>${escapeHtml(app.city || '-')}</dd></div>
-                    <div><dt>Ник</dt><dd>${escapeHtml(app.game_nick || '-')}</dd></div>
-                    <div><dt>Статик</dt><dd>${escapeHtml(app.static_number || '-')}</dd></div>
-                    <div><dt>Возраст OOC</dt><dd>${escapeHtml(app.ooc_age || '-')}</dd></div>
-                    <div><dt>Цель</dt><dd>${escapeHtml(app.join_goal || '-')}</dd></div>
-                    <div><dt>Как узнал</dt><dd>${escapeHtml(app.heard_about || '-')}</dd></div>
-                </dl>
-                ${app.status === 'pending' ? `
-                    <div class="actions-row">
-                        <button class="btn btn-success" onclick="window.__approve(${app.id})">Одобрить</button>
-                        <button class="btn btn-danger" onclick="window.__reject(${app.id})">Отклонить</button>
-                    </div>
-                ` : `
-                    <p class="muted">Обработал: ${escapeHtml(app.processed_by || '-')} • ${formatDate(app.processed_at)}</p>
-                `}
-            </article>
-        `).join('');
-    };
-
-    const renderTopRecruiters = (recruiters) => {
-        if (!recruiters || recruiters.length === 0) {
-            adminTopWrap.innerHTML = '<p class="muted">Пока нет данных.</p>';
-            return;
-        }
-
-        const rows = recruiters.map((item, index) => `
+        const rows = list.map((app) => `
             <tr>
-                <td>${index + 1}</td>
-                <td>${escapeHtml(item.recruiter)}</td>
-                <td>${item.approved || 0}</td>
-                <td>${item.total_processed || 0}</td>
-                <td>${item.rejected || 0}</td>
+                <td>${escapeHtml(app.discord_tag)}</td>
+                <td>${escapeHtml(app.city || '-')}</td>
+                <td>${escapeHtml(app.game_nick || '-')} | ${escapeHtml(app.static_number || '-')}</td>
+                <td>${escapeHtml(app.ooc_age || '-')}</td>
+                <td><span class="chip ${app.status}">${statusMap[app.status] || app.status}</span></td>
+                <td>${formatDate(app.created_at)}</td>
+                <td>
+                    ${app.status === 'pending' ? `
+                        <div class="table-actions">
+                            <button class="small-btn ok" onclick="window.__approve(${app.id})">Принять</button>
+                            <button class="small-btn bad" onclick="window.__reject(${app.id})">Отклонить</button>
+                        </div>
+                    ` : `<span class="muted">${escapeHtml(app.processed_by || '-')}</span>`}
+                </td>
             </tr>
         `).join('');
 
-        adminTopWrap.innerHTML = `
-            <table class="leaderboard">
+        applicationsList.innerHTML = `
+            <table class="command-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Рекрутер</th>
-                        <th>Одобрено</th>
-                        <th>Обработано</th>
-                        <th>Отклонено</th>
+                        <th>ИГРОК</th>
+                        <th>СЕМЬЯ</th>
+                        <th>НИК | СТАТИК</th>
+                        <th>ВОЗРАСТ</th>
+                        <th>СТАТУС</th>
+                        <th>ДАТА</th>
+                        <th>ДЕЙСТВИЕ</th>
                     </tr>
                 </thead>
                 <tbody>${rows}</tbody>
@@ -123,101 +100,119 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     };
 
-    const loadRecruitersTop = async () => {
+    const renderRoster = (roster) => {
+        if (!roster || roster.length === 0) {
+            rosterList.innerHTML = '<p class="muted">Состав недоступен.</p>';
+            return;
+        }
+
+        rosterList.innerHTML = roster.map((member) => `
+            <div class="roster-item">
+                <img src="${escapeHtml(member.avatar || '')}" alt="${escapeHtml(member.displayName)}">
+                <div>
+                    <strong>${escapeHtml(member.displayName)}</strong>
+                    <span>${escapeHtml(member.id)}</span>
+                </div>
+            </div>
+        `).join('');
+    };
+
+    const renderTop = (list) => {
+        if (!list || list.length === 0) {
+            adminTopWrap.innerHTML = '<p class="muted">Данных по рейтингу нет.</p>';
+            return;
+        }
+        adminTopWrap.innerHTML = list.map((item, index) => `
+            <article class="rating-item ${index === 0 ? 'first' : ''}">
+                <div class="rating-left">
+                    <div class="place">${index + 1}</div>
+                    <div>
+                        <h3>${escapeHtml(item.recruiter)}</h3>
+                        <div class="rating-meta">
+                            <span class="ok">${item.approved || 0} принято</span>
+                            <span class="reject">${item.rejected || 0} отклонено</span>
+                            <span class="all">${item.total_processed || 0} решений</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    };
+
+    const loadTop = async () => {
         adminTopWrap.innerHTML = '<p class="muted">Загрузка...</p>';
-        try {
-            const response = await fetch('/api/recruiters-top?limit=10');
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Не удалось загрузить рейтинг');
-            renderTopRecruiters(data.recruiters || []);
-        } catch (error) {
-            adminTopWrap.innerHTML = '<p class="muted">Ошибка загрузки топа.</p>';
+        const response = await fetch('/api/recruiters-top?limit=20');
+        const data = await response.json();
+        if (!response.ok) {
+            adminTopWrap.innerHTML = '<p class="muted">Ошибка загрузки рейтинга.</p>';
+            return;
+        }
+        renderTop(data.recruiters || []);
+    };
+
+    const loadData = async () => {
+        const [appsRes, overviewRes] = await Promise.all([
+            fetch('/api/applications'),
+            fetch('/api/public/overview')
+        ]);
+
+        if (!appsRes.ok) throw new Error('auth');
+        const appsData = await appsRes.json();
+        applications = appsData.applications || [];
+        renderApplications();
+
+        if (overviewRes.ok) {
+            const overviewData = await overviewRes.json();
+            renderRoster(overviewData.roster || []);
         }
     };
 
-    const loadApplications = async () => {
-        try {
-            const response = await fetch('/api/applications');
-            if (!response.ok) throw new Error('Требуется авторизация');
-            const data = await response.json();
-            applications = data.applications || [];
-
-            const stats = data.stats || {};
-            statTotal.textContent = stats.total || 0;
-            statPending.textContent = stats.pending || 0;
-            statApproved.textContent = stats.approved || 0;
-            statRejected.textContent = stats.rejected || 0;
-
-            renderApplications();
-            loadRecruitersTop();
-        } catch (error) {
-            showLogin();
+    const showOAuthError = () => {
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        if (!error) return;
+        oauthErrorText.classList.remove('hidden');
+        if (error === 'no_recruiter_role') {
+            oauthErrorText.textContent = 'Нет доступа: требуется роль рекрутера на Discord сервере.';
+        } else if (error === 'oauth_failed') {
+            oauthErrorText.textContent = 'Ошибка Discord OAuth. Попробуйте снова.';
+        } else {
+            oauthErrorText.textContent = 'Не удалось выполнить вход через Discord.';
         }
     };
 
     const checkAuth = async () => {
-        try {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-            if (data.isAdmin) {
-                showAdmin();
-                loadApplications();
-                return;
-            }
-            showLogin();
-        } catch (error) {
-            showLogin();
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+
+        if (!data.isAdmin) {
+            loginSection.classList.remove('hidden');
+            adminPanel.classList.add('hidden');
+            showOAuthError();
+            return;
         }
+
+        loginSection.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+
+        const user = data.user || {};
+        adminName.textContent = user.globalName || user.username || 'Recruiter';
+        if (user.avatar) adminAvatar.src = user.avatar;
+
+        await loadData();
+        await loadTop();
     };
 
-    loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        loginError.classList.add('hidden');
-
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (!response.ok) throw new Error('Неверные данные');
-            showAdmin();
-            loadApplications();
-        } catch (error) {
-            loginError.classList.remove('hidden');
-        }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-        await fetch('/api/logout', { method: 'POST' });
-        showLogin();
-        loginForm.reset();
-    });
-
-    document.querySelectorAll('.filter-btn').forEach((button) => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
-            button.classList.add('active');
-            currentFilter = button.dataset.filter;
-            renderApplications();
-        });
-    });
-
-    refreshAdminTopBtn.addEventListener('click', loadRecruitersTop);
-
     window.__approve = async (id) => {
-        if (!confirm('Одобрить заявку?')) return;
+        if (!confirm('Принять заявку?')) return;
         const response = await fetch(`/api/applications/${id}/approve`, { method: 'PUT' });
         const data = await response.json();
         if (!response.ok) {
             alert(data.error || 'Ошибка');
             return;
         }
-        loadApplications();
+        await loadData();
+        await loadTop();
     };
 
     window.__reject = async (id) => {
@@ -228,8 +223,50 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(data.error || 'Ошибка');
             return;
         }
-        loadApplications();
+        await loadData();
+        await loadTop();
     };
+
+    document.querySelectorAll('.tab-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach((item) => item.classList.remove('active'));
+            button.classList.add('active');
+
+            document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.add('hidden'));
+            const target = document.getElementById(button.dataset.tab);
+            if (target) target.classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('.status-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.status-btn').forEach((item) => item.classList.remove('active'));
+            button.classList.add('active');
+            currentStatus = button.dataset.status;
+            renderApplications();
+        });
+    });
+
+    document.querySelectorAll('.city-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.city-btn').forEach((item) => item.classList.remove('active'));
+            button.classList.add('active');
+            currentCity = button.dataset.city;
+            renderApplications();
+        });
+    });
+
+    searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value;
+        renderApplications();
+    });
+
+    refreshAdminTopBtn.addEventListener('click', loadTop);
+
+    logoutBtn.addEventListener('click', async () => {
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = '/admin';
+    });
 
     checkAuth();
 });

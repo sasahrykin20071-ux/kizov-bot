@@ -3,6 +3,10 @@ module.exports = {
     discord: {
         token: process.env.DISCORD_BOT_TOKEN || 'YOUR_DISCORD_BOT_TOKEN',
         guildId: process.env.DISCORD_GUILD_ID || 'YOUR_GUILD_ID',
+        clientId: process.env.DISCORD_CLIENT_ID || 'YOUR_DISCORD_CLIENT_ID',
+        clientSecret: process.env.DISCORD_CLIENT_SECRET || 'YOUR_DISCORD_CLIENT_SECRET',
+        redirectUri: process.env.DISCORD_REDIRECT_URI || 'https://your-domain.up.railway.app/api/auth/discord/callback',
+        inviteUrl: process.env.DISCORD_INVITE_URL || 'https://discord.gg/your-invite',
         familyRoleId: process.env.FAMILY_ROLE_ID || 'YOUR_FAMILY_ROLE_ID',
         logChannelId: process.env.LOG_CHANNEL_ID || 'YOUR_LOG_CHANNEL_ID',
         applicationChannelId: '1455982436323168286',

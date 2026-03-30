@@ -3,95 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель | Kizov FAMQ</title>
+    <title>Kizov FAMQ | Command Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="site-shell">
-        <header class="site-header">
-            <div class="brand">
-                <span class="brand-mark">KF</span>
+<body class="theme-red">
+    <div class="frame-glow"></div>
+    <header class="topbar">
+        <div class="brandline">
+            <span class="k-mark">K</span>
+            <span class="brand-main">KIZOV</span>
+            <span class="brand-accent">FAMQ</span>
+        </div>
+        <nav class="main-nav">
+            <a href="/">HOME</a>
+            <a href="/#intel">INTEL</a>
+            <a href="/#enlist">ENLIST</a>
+            <a href="/admin" class="active">COMMAND</a>
+        </nav>
+    </header>
+
+    <main class="command-wrap">
+        <section id="loginSection" class="login-discord-box">
+            <h1>COMMAND ACCESS</h1>
+            <p>Доступ к центру управления только для рекрутеров с ролью на Discord сервере.</p>
+            <a class="cta-btn" href="/api/auth/discord">ВОЙТИ ЧЕРЕЗ DISCORD</a>
+            <p id="oauthErrorText" class="error-text hidden"></p>
+        </section>
+
+        <section id="adminPanel" class="hidden">
+            <div class="command-top">
                 <div>
-                    <p class="brand-title">Kizov FAMQ</p>
-                    <p class="brand-subtitle">Административный контур</p>
+                    <h1>КОМАНДНЫЙ ЦЕНТР</h1>
+                    <p>Управление заявками и настройками набора.</p>
+                </div>
+                <div class="user-chip">
+                    <img id="adminAvatar" src="" alt="avatar">
+                    <span id="adminName">Recruiter</span>
+                    <button id="logoutBtn" class="ghost-btn">ВЫЙТИ</button>
                 </div>
             </div>
-            <nav class="site-nav">
-                <a href="/">Сайт</a>
-                <a href="/admin" class="nav-admin">Админка</a>
-                <button id="logoutBtn" class="btn btn-ghost">Выйти</button>
-            </nav>
-        </header>
 
-        <main class="site-main">
-            <section id="loginSection" class="panel narrow">
-                <h2>Вход администратора</h2>
-                <form id="loginForm" class="form-grid">
-                    <label>
-                        Логин
-                        <input type="text" id="username" required>
-                    </label>
-                    <label>
-                        Пароль
-                        <input type="password" id="password" required>
-                    </label>
-                    <div class="full">
-                        <button class="btn btn-primary" type="submit">Войти</button>
-                    </div>
-                </form>
-                <div id="loginError" class="notice error hidden">Неверный логин или пароль</div>
-            </section>
+            <div class="command-tabs">
+                <button class="tab-btn active" data-tab="applicationsTab">ЗАЯВКИ</button>
+                <button class="tab-btn" data-tab="ratingTab">РЕЙТИНГ</button>
+            </div>
 
-            <section id="adminPanel" class="hidden">
-                <div class="stats-cards">
-                    <article class="stats-card">
-                        <p>Всего заявок</p>
-                        <strong id="statTotal">0</strong>
-                    </article>
-                    <article class="stats-card">
-                        <p>Активные</p>
-                        <strong id="statPending">0</strong>
-                    </article>
-                    <article class="stats-card">
-                        <p>Одобрено</p>
-                        <strong id="statApproved">0</strong>
-                    </article>
-                    <article class="stats-card">
-                        <p>Отклонено</p>
-                        <strong id="statRejected">0</strong>
-                    </article>
-                </div>
-
-                <div class="panel">
-                    <div class="section-head">
-                        <h2>Топ рекрутеров</h2>
-                        <button id="refreshAdminTopBtn" class="btn btn-ghost">Обновить</button>
-                    </div>
-                    <div id="adminTopWrap" class="table-wrap">
-                        <p class="muted">Загрузка...</p>
-                    </div>
-                </div>
-
-                <div class="panel">
-                    <div class="section-head">
-                        <h2>Заявки</h2>
-                        <div class="filters">
-                            <button class="filter-btn active" data-filter="all">Все</button>
-                            <button class="filter-btn" data-filter="pending">Ожидают</button>
-                            <button class="filter-btn" data-filter="approved">Одобрены</button>
-                            <button class="filter-btn" data-filter="rejected">Отклонены</button>
+            <section id="applicationsTab" class="tab-panel">
+                <div class="command-grid">
+                    <div class="command-main">
+                        <div class="toolbar">
+                            <input id="searchInput" type="text" placeholder="Поиск игрока...">
+                            <div class="city-filter">
+                                <button class="city-btn active" data-city="all">ВСЕ</button>
+                                <button class="city-btn" data-city="Orlando">ORLANDO</button>
+                                <button class="city-btn" data-city="Seattle">SEATTLE</button>
+                            </div>
+                        </div>
+                        <div class="status-filter">
+                            <button class="status-btn active" data-status="all">ВСЕ</button>
+                            <button class="status-btn" data-status="pending">ОЖИДАЕТ</button>
+                            <button class="status-btn" data-status="in_review">РАССМОТРЕНИЕ</button>
+                            <button class="status-btn" data-status="called">ОБЗВОН</button>
+                            <button class="status-btn" data-status="approved">ПРИНЯТ</button>
+                            <button class="status-btn" data-status="rejected">ОТКЛОНЁН</button>
+                        </div>
+                        <div id="applicationsList" class="table-shell">
+                            <p class="muted">Загрузка заявок...</p>
                         </div>
                     </div>
-                    <div id="applicationsList" class="applications-grid">
-                        <p class="muted">Загрузка...</p>
-                    </div>
+
+                    <aside class="roster-box">
+                        <h3>СОСТАВ</h3>
+                        <p>Рекрутинговый отдел</p>
+                        <div id="rosterList" class="roster-list">
+                            <p class="muted">Загрузка состава...</p>
+                        </div>
+                    </aside>
                 </div>
             </section>
-        </main>
-    </div>
+
+            <section id="ratingTab" class="tab-panel hidden">
+                <div class="section-row">
+                    <div>
+                        <h2>РЕЙТИНГ РЕКРУТЕРОВ</h2>
+                        <p class="muted">Статистика по финальным решениям рекрутера.</p>
+                    </div>
+                    <button id="refreshAdminTopBtn" class="ghost-btn">ОБНОВИТЬ</button>
+                </div>
+                <div id="adminTopWrap" class="rating-list">
+                    <p class="muted">Загрузка...</p>
+                </div>
+            </section>
+        </section>
+    </main>
 
     <script src="js/admin.js"></script>
 </body>
