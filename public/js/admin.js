@@ -172,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const error = params.get('error');
         if (!error) return;
         oauthErrorText.classList.remove('hidden');
-        if (error === 'no_recruiter_role') {
+        if (error === 'oauth_not_configured') {
+            oauthErrorText.textContent = 'OAuth не настроен: проверь DISCORD_CLIENT_ID и DISCORD_CLIENT_SECRET в Railway Variables.';
+        } else if (error === 'no_recruiter_role') {
             oauthErrorText.textContent = 'Нет доступа: требуется роль рекрутера на Discord сервере.';
         } else if (error === 'oauth_failed') {
             oauthErrorText.textContent = 'Ошибка Discord OAuth. Попробуйте снова.';

@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const topRecruitersWrap = document.getElementById('topRecruitersWrap');
     const refreshTopBtn = document.getElementById('refreshTopBtn');
     const discordInviteBtn = document.getElementById('discordInviteBtn');
+    const navTabs = Array.from(document.querySelectorAll('.nav-tab'));
+    const viewMap = {
+        home: document.getElementById('view-home'),
+        intel: document.getElementById('view-intel'),
+        enlist: document.getElementById('view-enlist')
+    };
 
     const escapeHtml = (value) => {
         const div = document.createElement('div');
@@ -57,6 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
             topRecruitersWrap.innerHTML = '<p class="muted">Не удалось загрузить рейтинг.</p>';
         }
     };
+
+    const setActiveView = (viewName) => {
+        const target = viewMap[viewName] ? viewName : 'home';
+        Object.values(viewMap).forEach((panel) => panel.classList.remove('active'));
+        viewMap[target].classList.add('active');
+
+        navTabs.forEach((button) => {
+            button.classList.toggle('active', button.dataset.view === target);
+        });
+    };
+
+    navTabs.forEach((button) => {
+        button.addEventListener('click', () => {
+            const view = button.dataset.view;
+            setActiveView(view);
+            history.replaceState({}, '', `#${view}`);
+        });
+    });
+
+    const initialView = window.location.hash.replace('#', '');
+    setActiveView(initialView || 'home');
 
     refreshTopBtn.addEventListener('click', loadTop);
     loadOverview();

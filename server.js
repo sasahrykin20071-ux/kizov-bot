@@ -96,8 +96,13 @@ const getRecruiterRoster = async () => {
 };
 
 app.get('/api/auth/discord', (req, res) => {
-    if (!config.discord.clientId || !config.discord.clientSecret) {
-        return res.status(500).send('Discord OAuth не настроен.');
+    const clientId = String(config.discord.clientId || '');
+    const clientSecret = String(config.discord.clientSecret || '');
+    const isClientIdInvalid = !/^\d{17,22}$/.test(clientId) || clientId.includes('YOUR_DISCORD_CLIENT_ID');
+    const isClientSecretInvalid = !clientSecret || clientSecret.includes('YOUR_DISCORD_CLIENT_SECRET');
+
+    if (isClientIdInvalid || isClientSecretInvalid) {
+        return res.redirect('/admin?error=oauth_not_configured');
     }
     res.redirect(buildDiscordAuthUrl());
 });

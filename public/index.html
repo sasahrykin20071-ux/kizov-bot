@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kizov FAMQ | Enlist</title>
+    <title>Kizov FAMQ | Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="theme-red">
@@ -17,82 +17,90 @@
             <span class="brand-main">KIZOV</span>
             <span class="brand-accent">FAMQ</span>
         </div>
-        <nav class="main-nav">
-            <a href="#home" class="active">HOME</a>
-            <a href="#intel">INTEL</a>
-            <a href="#enlist">ENLIST</a>
-            <a href="/admin">COMMAND</a>
+        <nav class="main-nav main-nav-tabs">
+            <button class="nav-tab active" data-view="home">HOME</button>
+            <button class="nav-tab" data-view="intel">INTEL</button>
+            <button class="nav-tab" data-view="enlist">ENLIST</button>
+            <a href="/admin" class="nav-command-link">COMMAND</a>
         </nav>
     </header>
 
     <main>
-        <section id="home" class="hero-block">
-            <div class="hero-icon">💬</div>
-            <h1>ВСТУПИТЬ В <span>СЕМЬЮ</span></h1>
-            <p class="hero-sub">
-                Подача заявок осуществляется <b>исключительно через Discord</b>.
-            </p>
-            <p class="hero-text">
-                Зайди на сервер, открой канал подачи заявок и выбери семью: Orlando или Seattle.
-                Рекрутер свяжется с тобой после рассмотрения анкеты.
-            </p>
+        <section id="view-home" class="view-panel active">
+            <section class="hero-block">
+                <div class="hero-icon">◎</div>
+                <h1>ВСТУПИТЬ В <span>СЕМЬЮ</span></h1>
+                <p class="hero-sub">Подача заявок осуществляется <b>исключительно через Discord</b>.</p>
+                <p class="hero-text">
+                    Зайди на сервер, открой канал подачи заявок и выбери семью Orlando или Seattle.
+                    Рекрутер обработает заявку и даст решение.
+                </p>
+            </section>
+
+            <section class="card card-gradient">
+                <h2>ТРЕБОВАНИЯ ДЛЯ ВСТУПЛЕНИЯ</h2>
+                <ul class="requirements">
+                    <li>Возраст от 16 лет (исключения для сильных кандидатов).</li>
+                    <li>Рабочий микрофон и Discord-активность во время операций.</li>
+                    <li>Опыт командной или тактической игры.</li>
+                    <li>Готовность к дисциплине и развитию в составе.</li>
+                </ul>
+            </section>
         </section>
 
-        <section id="intel" class="card card-red">
-            <h2>ОГЛАВЛЕНИЕ</h2>
-            <ol class="toc">
-                <li><a href="#enlist">Как подать заявку</a></li>
-                <li><a href="#requirements">Требования для вступления</a></li>
-                <li><a href="#rating">Рейтинг рекрутеров</a></li>
-                <li><a href="#intel-info">Информация о FAMQ</a></li>
-            </ol>
-        </section>
+        <section id="view-intel" class="view-panel">
+            <section class="card card-red">
+                <h2>ОГЛАВЛЕНИЕ</h2>
+                <ol class="toc">
+                    <li>Как подать заявку в семью</li>
+                    <li>Рейтинг рекрутеров</li>
+                    <li>Требования и правила вступления</li>
+                    <li>Информация о составе и философии FAMQ</li>
+                </ol>
+            </section>
 
-        <section id="enlist" class="card card-dark">
-            <h2>КАК ПОДАТЬ ЗАЯВКУ</h2>
-            <div class="steps">
-                <div><span>01</span> Зайди на Discord сервер Kizov FAMQ</div>
-                <div><span>02</span> Открой канал <b>#подача-заявки</b></div>
-                <div><span>03</span> Нажми кнопку нужной семьи: Orlando или Seattle</div>
-                <div><span>04</span> Заполни анкету в Discord-форме и ожидай решения</div>
-            </div>
-            <a id="discordInviteBtn" href="#" target="_blank" rel="noopener" class="cta-btn">ПЕРЕЙТИ В DISCORD</a>
-            <p class="muted">Подача через сайт отключена специально, чтобы исключить дубли и фейковые анкеты.</p>
-        </section>
+            <section class="card card-dark intel-grid">
+                <article class="intel-text">
+                    <h2>ИНФОРМАЦИЯ О FAMQ</h2>
+                    <p>
+                        Kizov FAMQ это структурированная семья, где рекрутинг построен как система:
+                        прозрачные этапы, быстрый отклик и решения по делу.
+                    </p>
+                    <p class="muted">
+                        Наша цель собрать стабильный состав на долгую дистанцию, а не разовый набор.
+                    </p>
+                </article>
+                <div class="intel-visual"></div>
+            </section>
 
-        <section id="requirements" class="card card-gradient">
-            <h2>ТРЕБОВАНИЯ ДЛЯ ВСТУПЛЕНИЯ</h2>
-            <ul class="requirements">
-                <li>Возраст от 16 лет (исключения только для сильных кандидатов).</li>
-                <li>Рабочий микрофон и присутствие в Discord во время активностей.</li>
-                <li>Опыт командной/тактической игры и стрессоустойчивость.</li>
-                <li>Готовность учиться, соблюдать устав и уважать состав.</li>
-            </ul>
-        </section>
-
-        <section id="rating" class="card card-dark">
-            <div class="section-row">
-                <div>
-                    <h2>РЕЙТИНГ РЕКРУТЕРОВ</h2>
-                    <p class="muted">Статистика по принятым и отклонённым заявкам.</p>
+            <section class="card card-dark">
+                <div class="section-row">
+                    <div>
+                        <h2>РЕЙТИНГ РЕКРУТЕРОВ</h2>
+                        <p class="muted">Статистика по принятым и отклонённым заявкам.</p>
+                    </div>
+                    <button id="refreshTopBtn" class="ghost-btn">ОБНОВИТЬ</button>
                 </div>
-                <button id="refreshTopBtn" class="ghost-btn">ОБНОВИТЬ</button>
-            </div>
-            <div id="topRecruitersWrap" class="rating-list">
-                <p class="muted">Загрузка...</p>
-            </div>
+                <div id="topRecruitersWrap" class="rating-list">
+                    <p class="muted">Загрузка...</p>
+                </div>
+            </section>
         </section>
 
-        <section id="intel-info" class="card card-dark">
-            <h2>ИНФОРМАЦИЯ О FAMQ</h2>
-            <p>
-                Kizov FAMQ это организованная семья с жёсткой дисциплиной и прозрачной системой рекрутинга.
-                Мы набираем игроков на долгосрок, поэтому каждый кандидат проходит структурированный отбор.
-            </p>
-            <p class="muted">
-                Если у тебя нет доступа к серверу, обратись к действующему участнику состава.
-            </p>
+        <section id="view-enlist" class="view-panel">
+            <section class="card card-dark">
+                <h2>КАК ПОДАТЬ ЗАЯВКУ</h2>
+                <div class="steps">
+                    <div><span>01</span> Зайди на Discord сервер Kizov FAMQ</div>
+                    <div><span>02</span> Открой канал <b>#подача-заявки</b></div>
+                    <div><span>03</span> Нажми кнопку нужной семьи: Orlando или Seattle</div>
+                    <div><span>04</span> Заполни анкету в Discord-форме и отправь</div>
+                </div>
+                <a id="discordInviteBtn" href="#" target="_blank" rel="noopener" class="cta-btn">ПЕРЕЙТИ В DISCORD</a>
+                <p class="muted">Подача через сайт отключена, чтобы не было дубликатов и ошибок.</p>
+            </section>
         </section>
+
     </main>
 
     <script src="js/app.js"></script>

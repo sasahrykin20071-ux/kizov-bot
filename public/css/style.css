@@ -18,7 +18,7 @@
 body.theme-red {
     margin: 0;
     color: var(--text);
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Manrope", system-ui, sans-serif;
     background: linear-gradient(180deg, #12040a 0%, #080910 18%, #05060b 100%);
 }
 
@@ -49,7 +49,7 @@ body.theme-red {
     display: flex;
     gap: 9px;
     align-items: center;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     letter-spacing: 0.03em;
 }
 
@@ -80,11 +80,42 @@ body.theme-red {
 
 .main-nav a {
     text-decoration: none;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     color: #b7bbc7;
     letter-spacing: 0.06em;
     font-size: 18px;
     position: relative;
+}
+
+.main-nav-tabs {
+    border: 1px solid #2a2f40;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+    background: rgba(14, 16, 26, 0.9);
+}
+
+.nav-tab,
+.nav-command-link {
+    border: 0;
+    background: transparent;
+    color: #b7bbc7;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.08em;
+    font-size: 28px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.nav-tab.active,
+.nav-tab:hover,
+.nav-command-link:hover {
+    color: #fff;
+    background: linear-gradient(180deg, rgba(255, 24, 76, 0.28), rgba(255, 24, 76, 0.09));
+    box-shadow: inset 0 0 0 1px rgba(255, 24, 76, 0.45);
 }
 
 .main-nav a.active,
@@ -97,6 +128,15 @@ main {
     margin: 18px auto 34px;
     display: grid;
     gap: 14px;
+}
+
+.view-panel {
+    display: none;
+    gap: 14px;
+}
+
+.view-panel.active {
+    display: grid;
 }
 
 .hero-block {
@@ -121,7 +161,7 @@ main {
 
 .hero-block h1 {
     margin: 0;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: clamp(48px, 8vw, 94px);
     line-height: 1;
     letter-spacing: 0.02em;
@@ -134,7 +174,8 @@ main {
 .hero-sub {
     margin: 18px 0 8px;
     font-size: 30px;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.04em;
 }
 
 .hero-text {
@@ -152,7 +193,7 @@ main {
 
 .card h2 {
     margin: 0 0 12px;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 44px;
     letter-spacing: 0.05em;
 }
@@ -198,7 +239,7 @@ main {
 }
 
 .steps span {
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     color: var(--red);
     margin-right: 10px;
 }
@@ -210,7 +251,7 @@ main {
     background: linear-gradient(180deg, #ff265a, #d21242);
     color: #fff;
     border-radius: 8px;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 23px;
     letter-spacing: 0.04em;
     padding: 10px 14px;
@@ -243,7 +284,8 @@ main {
     color: #d6d9e6;
     padding: 8px 12px;
     cursor: pointer;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.05em;
 }
 
 .rating-list {
@@ -277,7 +319,7 @@ main {
     border: 1px solid #32384a;
     display: grid;
     place-items: center;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
 }
 
 .rating-item h3 {
@@ -309,19 +351,30 @@ main {
 }
 
 .login-discord-box {
-    max-width: 620px;
+    max-width: 760px;
     margin: 35px auto;
-    border: 1px solid #34131d;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(66, 11, 23, 0.4), rgba(10, 11, 17, 0.96));
-    padding: 24px;
+    border: 1px solid #5a1226;
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 50% -20%, rgba(255, 24, 76, 0.28), transparent 45%),
+        linear-gradient(180deg, rgba(52, 8, 19, 0.78), rgba(9, 10, 16, 0.97));
+    padding: 34px 24px;
     text-align: center;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
 }
 
 .login-discord-box h1 {
     margin: 0 0 12px;
-    font-family: "Oswald", sans-serif;
-    font-size: 50px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 86px;
+    letter-spacing: 0.04em;
+    line-height: 0.9;
+}
+
+.login-discord-box p {
+    font-size: 30px;
+    max-width: 700px;
+    margin: 0 auto 18px;
 }
 
 .error-text {
@@ -342,7 +395,7 @@ main {
 
 .command-top h1 {
     margin: 0;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 54px;
 }
 
@@ -378,7 +431,7 @@ main {
     border: 0;
     background: #121521;
     color: #c4c9d7;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     padding: 10px 15px;
     cursor: pointer;
 }
@@ -432,7 +485,8 @@ main {
     color: #b6bccd;
     border-radius: 8px;
     padding: 7px 10px;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.04em;
     cursor: pointer;
 }
 
@@ -464,7 +518,7 @@ main {
 }
 
 .command-table th {
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     color: #aeb4c6;
     font-size: 15px;
 }
@@ -473,7 +527,7 @@ main {
     border: 1px solid;
     border-radius: 6px;
     padding: 3px 7px;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 13px;
 }
 
@@ -532,8 +586,52 @@ main {
 
 .roster-box h3 {
     margin: 0;
-    font-family: "Oswald", sans-serif;
+    font-family: "Bebas Neue", sans-serif;
     font-size: 28px;
+}
+
+.intel-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.intel-text p {
+    font-size: 19px;
+}
+
+.intel-visual {
+    border: 1px solid #2b3142;
+    border-radius: 12px;
+    background:
+        linear-gradient(140deg, rgba(255, 24, 76, 0.18), rgba(18, 22, 34, 0.9)),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 18px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 18px);
+    position: relative;
+    overflow: hidden;
+}
+
+.intel-visual::before {
+    content: "INTEL FEED";
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 34px;
+    color: #ffd3de;
+    letter-spacing: 0.06em;
+}
+
+.intel-visual::after {
+    content: "";
+    position: absolute;
+    right: -34px;
+    bottom: -34px;
+    width: 180px;
+    height: 180px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 24, 76, 0.5), transparent 66%);
 }
 
 .roster-box p {
@@ -589,6 +687,10 @@ main {
     }
 
     .command-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .intel-grid {
         grid-template-columns: 1fr;
     }
 }
