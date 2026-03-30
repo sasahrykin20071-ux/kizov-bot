@@ -40,12 +40,15 @@ app.post('/api/login', async (req, res) => {
         const { username, password } = req.body;
 
         const isValidUser = username === config.admin.username;
+        const rawPassword = String(password || '');
+
         let isValidPassword = false;
-        try {
-            isValidPassword = await bcrypt.compare(password || '', config.admin.passwordHash);
-        } catch (e) {
-            // Fallback для старого тестового конфига
-            isValidPassword = password === 'admin123';
+        if (config.admin.password) {
+            // Основной способ: пароль в переменной окружения
+            isValidPassword = rawPassword === config.admin.password;
+        } else if (config.admin.passwordHash) {
+            // Альтернативный способ: bcrypt hash
+            isValidPassword = await bcrypt.compare(rawPassword, config.admin.passwordHash);
         }
 
         if (isValidUser && isValidPassword) {

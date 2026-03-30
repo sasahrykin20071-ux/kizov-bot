@@ -28,8 +28,10 @@ module.exports = {
     // Администратор
     admin: {
         username: process.env.ADMIN_USERNAME || 'admin',
-        // Пароль по умолчанию: admin123 (изменить в продакшене!)
-        passwordHash: process.env.ADMIN_PASSWORD_HASH || '$2a$10$rQXkQZQZQZQZQZQZQZQZOQXQXQXQXQXQXQXQXQXQXQXQXQXOQXQ' // bcrypt hash of 'admin123'
+        // Рекомендуется задавать ADMIN_PASSWORD в переменных Railway
+        password: process.env.ADMIN_PASSWORD || '',
+        // Альтернатива: bcrypt hash в ADMIN_PASSWORD_HASH
+        passwordHash: process.env.ADMIN_PASSWORD_HASH || ''
     },
     
     // Семья (название)
