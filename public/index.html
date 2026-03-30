@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подать заявку | Kizov FAMQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🎮</span>
+                <span class="logo-text">Kizov FAMQ</span>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link active">Заявка</a>
+                <a href="/admin" class="nav-link">Админ</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="card">
+                <h1 class="title">Подать заявку</h1>
+                <p class="subtitle">Заполните форму ниже, чтобы подать заявку в нашу семью</p>
+
+                <form id="applyForm" class="form">
+                    <div class="form-group">
+                        <label for="discord_tag">Discord тег</label>
+                        <input 
+                            type="text" 
+                            id="discord_tag" 
+                            name="discord_tag" 
+                            placeholder="Имя#1234"
+                            required
+                        >
+                        <span class="hint">Ваш полный Discord тег с # и четырьмя цифрами</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="game_nick">Ваш ник в игре</label>
+                        <input 
+                            type="text" 
+                            id="game_nick" 
+                            name="game_nick" 
+                            placeholder="Введите игровой ник"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="static_number">Статик #</label>
+                        <input 
+                            type="text" 
+                            id="static_number" 
+                            name="static_number" 
+                            placeholder="Например: 12"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ooc_age">Возраст OOC</label>
+                        <input 
+                            type="number" 
+                            id="ooc_age" 
+                            name="ooc_age" 
+                            placeholder="18"
+                            min="13"
+                            max="99"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="join_goal">Цель вступления</label>
+                        <textarea 
+                            id="join_goal" 
+                            name="join_goal" 
+                            placeholder="Почему хочешь вступить?"
+                            rows="3"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heard_about">Как узнали о семье</label>
+                        <textarea 
+                            id="heard_about" 
+                            name="heard_about" 
+                            placeholder="Откуда узнали о Kizov FAMQ"
+                            rows="3"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Сервер</label>
+                        <select id="city" name="city" required>
+                            <option value="Seattle">Seattle</option>
+                            <option value="Orlando">Orlando</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        Отправить заявку
+                    </button>
+                </form>
+
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <div class="success-icon">✅</div>
+                    <h2>Заявка отправлена!</h2>
+                    <p>Мы рассмотрим её в ближайшее время и свяжемся с тобой в Discord.</p>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;">
+                    <div class="error-icon">❌</div>
+                    <p id="errorText"></p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 Kizov FAMQ. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

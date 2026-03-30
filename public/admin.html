@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель | Kizov FAMQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🎮</span>
+                <span class="logo-text">Kizov FAMQ</span>
+                <span class="badge">Админ</span>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Заявка</a>
+                <a href="/admin" class="nav-link active">Админ</a>
+                <button id="logoutBtn" class="btn btn-small">Выйти</button>
+            </nav>
+        </header>
+
+        <main class="main">
+            <!-- Форма входа -->
+            <div id="loginSection" class="card">
+                <h1 class="title">Вход для администратора</h1>
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+                <div id="loginError" class="error-message" style="display: none;">
+                    <p>Неверный логин или пароль</p>
+                </div>
+            </div>
+
+            <!-- Панель управления -->
+            <div id="adminPanel" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">Всего заявок</div>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <div class="stat-value" id="statPending">0</div>
+                        <div class="stat-label">Ожидают</div>
+                    </div>
+                    <div class="stat-card stat-approved">
+                        <div class="stat-value" id="statApproved">0</div>
+                        <div class="stat-label">Одобрено</div>
+                    </div>
+                    <div class="stat-card stat-rejected">
+                        <div class="stat-value" id="statRejected">0</div>
+                        <div class="stat-label">Отклонено</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Заявки</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">Все</button>
+                            <button class="filter-btn" data-filter="pending">Ожидают</button>
+                            <button class="filter-btn" data-filter="in_review">На рассмотрении</button>
+                            <button class="filter-btn" data-filter="called">Обзвон</button>
+                            <button class="filter-btn" data-filter="approved">Одобрены</button>
+                            <button class="filter-btn" data-filter="rejected">Отклонены</button>
+                        </div>
+                    </div>
+
+                    <div id="applicationsList" class="applications-list">
+                        <div class="loading">Загрузка...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 Kizov FAMQ. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
